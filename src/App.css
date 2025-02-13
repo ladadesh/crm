@@ -1,0 +1,21 @@
+.background-white{
+    background-color: white !important;
+}
+
+/* Header Image */
+.login-header-img {
+    position: absolute;
+    top: 0;
+    right: 31%;
+    width: 150px; /* Adjust size as needed */
+    z-index: 1;
+  }
+  
+  /* Bottom Image */
+  .login-bottom-img {
+    position: absolute;
+    bottom: 0;
+    left: 31%;
+    width: 200px; /* Adjust size as needed */
+    z-index: 1;
+  }
