@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Card,
@@ -10,11 +10,20 @@ import {
 } from "@mui/material";
 import { Add, Visibility, Edit, Delete } from "@mui/icons-material";
 import TaskModal from "./modals/TaskModal";
-import { useDispatch } from "react-redux";
-import { handleTaskPopup } from "../redux/taskSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTasksAsync, handleTaskPopup } from "../redux/taskSlice";
+import { formatDate, getDateDifference } from "../utils";
 
 const TaskList = () => {
   const dispatch = useDispatch();
+  const { tasks, status, error } = useSelector((state) => state.tasks);
+
+  useEffect(() => {
+    dispatch(fetchTasksAsync()); // Fetch tasks on mount
+  }, [dispatch]);
+
+  if (status === "loading") return <p>Loading...</p>;
+  if (status === "failed") return <p>Error: {error}</p>;
 
   return (
     <>
@@ -51,42 +60,45 @@ const TaskList = () => {
         </Box>
 
         {/* Task Item */}
-        <Card sx={{ mt: 2, p: 2 }}>
-          <Box display="flex" alignItems="center">
-            <Checkbox />
-            <Box flexGrow={1}>
-              <Typography variant="subtitle1" fontWeight="bold">
-                #new1
-              </Typography>
-              <Typography
-                variant="h6"
-                color="primary"
-                sx={{ textDecoration: "underline", cursor: "pointer", mb: 1 }}
-                onClick={() => dispatch(handleTaskPopup(true))}
-              >
-                Test Title
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                📅 Due in 11 days, 26th Feb &nbsp;&nbsp; ⏳ Medium
-              </Typography>
+        {tasks?.map((item, index) => (
+          <Card sx={{ mt: 2, p: 2 }} key={index}>
+            <Box display="flex" alignItems="center">
+              <Checkbox />
+              <Box flexGrow={1}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {item?.taskId}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  color="primary"
+                  sx={{ textDecoration: "underline", cursor: "pointer", mb: 1 }}
+                  onClick={() => dispatch(handleTaskPopup(true))}
+                >
+                  {item?.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  📅 Due in {getDateDifference(item?.deadline, item?.createdAt)}{" "}
+                  days, {formatDate(item?.deadline)} &nbsp;&nbsp; ⏳ Medium
+                </Typography>
+              </Box>
+              <Chip label={item?.statusName} variant="outlined" />
+              <Box display="flex" ml={2}>
+                <IconButton>
+                  <Add />
+                </IconButton>
+                <IconButton>
+                  <Visibility />
+                </IconButton>
+                <IconButton>
+                  <Edit />
+                </IconButton>
+                <IconButton color="error">
+                  <Delete />
+                </IconButton>
+              </Box>
             </Box>
-            <Chip label="Not Started" variant="outlined" />
-            <Box display="flex" ml={2}>
-              <IconButton>
-                <Add />
-              </IconButton>
-              <IconButton>
-                <Visibility />
-              </IconButton>
-              <IconButton>
-                <Edit />
-              </IconButton>
-              <IconButton color="error">
-                <Delete />
-              </IconButton>
-            </Box>
-          </Box>
-        </Card>
+          </Card>
+        ))}
       </Box>
       <TaskModal />
     </>

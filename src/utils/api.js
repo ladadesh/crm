@@ -12,17 +12,17 @@ api.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${token}`;
   }
 
-  store.dispatch(showLoader(true)); // ✅ Show Loader when request starts
+  store.dispatch(showLoader(true)); //   Show Loader when request starts
   return config;
 });
 
 api.interceptors.response.use(
   (response) => {
-    store.dispatch(showLoader(false)); // ✅ Hide Loader on success
+    store.dispatch(showLoader(false)); //   Hide Loader on success
     return response;
   },
   (error) => {
-    store.dispatch(showLoader(false)); // ✅ Hide Loader on error
+    store.dispatch(showLoader(false)); //   Hide Loader on error
     return Promise.reject(error);
   }
 );
