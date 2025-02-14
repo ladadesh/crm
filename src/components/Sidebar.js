@@ -15,14 +15,17 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Link } from "react-router-dom";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true); // State for sidebar toggle
+  const location = useLocation();
 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     { text: "Customers", icon: <PeopleIcon />, path: "/customers" },
+    { text: "Tasks", icon: <PlaylistAddIcon />, path: "/tasks" },
     {
       text: "Notifications",
       icon: <NotificationsIcon />,
@@ -67,6 +70,8 @@ const Sidebar = () => {
               component={Link}
               to={item.path}
               sx={{
+                backgroundColor:
+                  location.pathname === item?.path ? "#123456" : "",
                 justifyContent: open ? "initial" : "center",
                 "&:hover": { backgroundColor: "#123456" }, // Optional hover effect
                 marginLeft: open ? 0 : "30px",

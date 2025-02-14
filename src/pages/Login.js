@@ -11,12 +11,17 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CustomTextField from "../components/shared/CustomTextField"; // Import the reusable component
 import LoginHeaderImg from "../assets/images/login1.svg";
 import LoginBottomImg from "../assets/images/login2.svg";
+import { loginUser } from "../utils/authApi";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -24,8 +29,10 @@ const Login = () => {
   } = useForm();
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data) => {
-    console.log("Login Data:", data);
+  const onSubmit = async (data) => {
+    const dataObj = await loginUser(data?.email, data?.password);
+    dispatch(login(dataObj));
+    navigate("/tasks");
   };
 
   return (
